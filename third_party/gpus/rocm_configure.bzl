@@ -327,6 +327,7 @@ def _find_libs(repository_ctx, rocm_config, bash_bin):
         for name, path in [
             ("amdhip64", rocm_config.rocm_toolkit_path + "/hip"),
             ("rocblas", rocm_config.rocm_toolkit_path + "/rocblas"),
+            ("rocsolver", rocm_config.rocm_toolkit_path + "/rocsolver"),
             ("rocfft", rocm_config.rocm_toolkit_path + "/rocfft"),
             ("hiprand", rocm_config.rocm_toolkit_path + "/hiprand"),
             ("MIOpen", rocm_config.rocm_toolkit_path + "/miopen"),
@@ -452,6 +453,7 @@ def _create_dummy_repository(repository_ctx):
         {
             "%{hip_lib}": _lib_name("hip"),
             "%{rocblas_lib}": _lib_name("rocblas"),
+            "%{rocsolver_lib}": _lib_name("rocsolver"),
             "%{miopen_lib}": _lib_name("miopen"),
             "%{rccl_lib}": _lib_name("rccl"),
             "%{rocfft_lib}": _lib_name("rocfft"),
@@ -558,6 +560,12 @@ def _create_local_rocm_repository(repository_ctx):
         ),
         make_copy_dir_rule(
             repository_ctx,
+            name = "rocsolver-include",
+            src_dir = rocm_toolkit_path + "/rocsolver/include",
+            out_dir = "rocm/include/rocsolver",
+        ),
+        make_copy_dir_rule(
+            repository_ctx,
             name = "miopen-include",
             src_dir = rocm_toolkit_path + "/miopen/include",
             out_dir = "rocm/include/miopen",
@@ -622,6 +630,7 @@ def _create_local_rocm_repository(repository_ctx):
         {
             "%{hip_lib}": rocm_libs["amdhip64"].file_name,
             "%{rocblas_lib}": rocm_libs["rocblas"].file_name,
+            "%{rocsolver_lib}": rocm_libs["rocsolver"].file_name,
             "%{rocfft_lib}": rocm_libs["rocfft"].file_name,
             "%{hiprand_lib}": rocm_libs["hiprand"].file_name,
             "%{miopen_lib}": rocm_libs["MIOpen"].file_name,
@@ -631,6 +640,7 @@ def _create_local_rocm_repository(repository_ctx):
             "%{rocm_headers}": ('":rocm-include",\n' +
                                 '":rocfft-include",\n' +
                                 '":rocblas-include",\n' +
+                                '":rocsolver-include",\n' +
                                 '":miopen-include",\n' +
                                 '":rccl-include",\n' +
                                 '":hipsparse-include",'),

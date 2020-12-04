@@ -50,6 +50,18 @@ cc_library(
 )
 
 cc_library(
+    name = "rocsolver",
+    srcs = ["rocm/lib/%{rocsolver_lib}"],
+    data = ["rocm/lib/%{rocsolver_lib}"],
+    includes = [
+        ".",
+        "rocm/include",
+    ],
+    linkstatic = 1,
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "rocfft",
     srcs = ["rocm/lib/%{rocfft_lib}"],
     data = ["rocm/lib/%{rocfft_lib}"],
@@ -105,6 +117,7 @@ cc_library(
         ":rocm_headers",
         ":hip",
         ":rocblas",
+        ":rocsolver",
         ":rocfft",
         ":hiprand",
         ":miopen",
