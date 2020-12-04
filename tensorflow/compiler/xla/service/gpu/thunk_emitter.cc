@@ -420,8 +420,8 @@ Status ThunkEmitter::HandleCustomCall(HloInstruction* custom_call) {
   }
 #endif
 
-  return Unimplemented("No registered implementation for custom call to \"%s\"",
-                       custom_call->custom_call_target());
+  return Unimplemented("No registered implementation for custom call to \"%s\" on platform \"%s\"",
+                        custom_call->custom_call_target(), std::string(platform_name()));
 }
 
 Status ThunkEmitter::HandleFft(HloInstruction* fft) {
