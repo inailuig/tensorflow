@@ -167,6 +167,36 @@ def _find_rocblas_config(rocm_install_path):
   return rocblas_config
 
 
+def _find_rocsolver_config(rocm_install_path):
+
+  def rocsolver_version_numbers(path):
+    possible_version_files = [
+      "rocsolver/include/rocsolver-version.h"
+    ]
+    version_file = None
+    for f in possible_version_files:
+      version_file = os.path.join(path, f)
+      if  os.path.exists(version_file):
+        break
+    if not os.path.exists(version_file):
+      raise ConfigError(
+        'rocsolver version file "{}" not found'.format(version_file))
+    version_numbers = []
+    major = _get_header_version(version_file, "ROCSOLVER_VERSION_MAJOR")
+    minor = _get_header_version(version_file, "ROCSOLVER_VERSION_MINOR")
+    patch = _get_header_version(version_file, "ROCSOLVER_VERSION_PATCH")
+    return major, minor, patch
+
+  major, minor, patch = rocsolver_version_numbers(rocm_install_path)
+
+  rocsolver_config = {
+      "rocsolver_version_number":
+          _get_composite_version_number(major, minor, patch)
+  }
+
+  return rocsolver_config
+
+
 def _find_rocrand_config(rocm_install_path):
 
   def rocrand_version_number(path):
@@ -265,6 +295,7 @@ def find_rocm_config():
   result.update(_find_hipruntime_config(rocm_install_path))
   result.update(_find_miopen_config(rocm_install_path))
   result.update(_find_rocblas_config(rocm_install_path))
+  result.update(_find_rocsolver_config(rocm_install_path))
   result.update(_find_rocrand_config(rocm_install_path))
   result.update(_find_rocfft_config(rocm_install_path))
   result.update(_find_roctracer_config(rocm_install_path))
