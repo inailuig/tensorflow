@@ -431,7 +431,7 @@ def register_custom_call_target(name, fn, platform='cpu'):
     fn: a PyCapsule object containing the function pointer.
     platform: the target platform.
   """
-  _xla.register_custom_call_target(name, fn, xla_platform_names[platform])
+  _xla.register_custom_call_target(name, fn, xla_platform_names.get(platform, platform))
 
 
 # Deprecated. Use register_custom_call_target instead.
