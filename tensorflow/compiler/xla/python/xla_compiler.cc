@@ -154,6 +154,14 @@ Status PyRegisterCustomCallTarget(const std::string& fn_name,
   return Status::OK();
 }
 
+bool PyLookupCustomCallTarget(const std::string& fn_name,
+                                   const std::string& platform) {
+   static const char* const kName = "xla._CUSTOM_CALL_TARGET";
+   // TODO(phawkins): remove old name after fixing users.
+   static const char* const kOldCpuName = "xla._CPU_CUSTOM_CALL_TARGET";
+   return CustomCallTargetRegistry::Global()->Lookup(fn_name, platform);
+ }
+
 }  // namespace
 
 void BuildXlaCompilerSubmodule(py::module& m) {
@@ -490,7 +498,7 @@ void BuildXlaCompilerSubmodule(py::module& m) {
 
   // Custom-call targets.
   m.def("register_custom_call_target", &PyRegisterCustomCallTarget);
-
+  m.def("lookup_custom_call_target", &PyLookupCustomCallTarget);
   py::class_<DebugOptions>(m, "DebugOptions")
       .def("__repr__", &DebugOptions::DebugString)
       .def_property("xla_cpu_enable_fast_math",
