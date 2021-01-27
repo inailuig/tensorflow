@@ -827,7 +827,8 @@ std::string GetFeatureStrFromGCNArchName(const std::string& gcn_arch_name) {
 #if TF_ROCM_VERSION < 30900
   // For ROCm versions older than 3.9, hardcode it to "+code-object-v3"
   // This is simply to preserve how things were...nohing else
-  feature_str = "+code-object-v3";
+//  feature_str = "+code-object-v3";
+  feature_str = "";
 #elif TF_ROCM_VERSION < 40000
   // For ROCM versions 3.9 and 3.10, hardcode it to empty string
   feature_str = "";

@@ -820,12 +820,6 @@ GpuExecutor::CreateDeviceDescription(int device_ordinal) {
     return status;
   }
 
-  std::string gcn_arch_name;
-  status = GpuDriver::GetGpuGCNArchName(device, &gcn_arch_name);
-  if (!status.ok()) {
-    return status;
-  }
-
   internal::DeviceDescriptionBuilder builder;
 
   {
@@ -894,7 +888,7 @@ GpuExecutor::CreateDeviceDescription(int device_ordinal) {
   }
 
   builder.set_platform_version(
-      absl::StrCat("AMDGPU ISA version: ", gcn_arch_name));
+      absl::StrCat("AMDGPU ISA version: gfx", version));
 
   // TODO(leary) should be a way to query this from the driver, but this is
   // unlikely to change for us any time soon.
@@ -902,8 +896,6 @@ GpuExecutor::CreateDeviceDescription(int device_ordinal) {
 
   builder.set_device_vendor("Advanced Micro Devices, Inc");
   builder.set_rocm_amdgpu_isa_version(version);
-  builder.set_rocm_amdgpu_gcn_arch_name(gcn_arch_name);
-
   builder.set_shared_memory_per_core(
       GpuDriver::GetMaxSharedMemoryPerCore(device).ValueOrDie());
   builder.set_shared_memory_per_block(

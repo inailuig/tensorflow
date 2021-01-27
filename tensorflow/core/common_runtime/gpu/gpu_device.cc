@@ -1770,11 +1770,15 @@ Status BaseGPUDeviceFactory::GetValidDeviceIds(
               << strings::HumanReadableNumBytes(description->memory_bandwidth())
               << "/s";
 #elif TENSORFLOW_USE_ROCM
-    std::string gcn_arch_name = description->rocm_amdgpu_gcn_arch_name();
+    int isa_version;
+    if (!description->rocm_amdgpu_isa_version(&isa_version)) {
+      // Logs internally on failure.
+      isa_version = 0;
+    }
     LOG(INFO) << "Found device " << i << " with properties: "
               << "\npciBusID: " << description->pci_bus_id()
               << " name: " << description->name()
-              << "     ROCm AMDGPU Arch: " << gcn_arch_name
+              << "     ROCm AMD GPU ISA: gfx" << isa_version
               << "\ncoreClock: " << description->clock_rate_ghz() << "GHz"
               << " coreCount: " << description->core_count()
               << " deviceMemorySize: "
